@@ -1,0 +1,6 @@
+$ cat .gitignore
+
+ideas/
+.ideas/
+idea/
+.idea/ 
