@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Game Rock Scissors Paper </title>
+</head>
+<body>
+  
+  <script type="text/javascript">
+
+function computerPlay () {
+    let choice = Math.floor(Math.random() * 3);
+    let set = ['rock', 'paper', 'scissors'];
+    return set[choice];
+  }
+
+  function playRound (playerSelection, computerSelection) {
+  	playerSelection = playerSelection.toLocaleLowerCase();
+    let result;
+    if (playerSelection === null || playerSelection === undefined 
+    	|| computerSelection === null || computerSelection === undefined) {
+        return result = "Что-то пошло не так..."; 
+    }
+    if (playerSelection === computerSelection) {
+        return result = "Ничья!";
+    }
+    if ((playerSelection === "rock" && computerSelection === "scissors")
+        || (playerSelection === "scissors" && computerSelection === "paper")
+        || (playerSelection === "paper" && computerSelection === "rock")) {
+        return result = "Игрок выиграл!";
+    }
+    else {
+        return result = "Компьютер выиграл!";
+    }
+  }
+
+  function game() {
+    let playerScore = 0;
+    let computerScore = 0;
+
+    while ((playerScore + computerScore) < 5) {
+        let playerSelection = prompt("Сделайте свой ход - выберите rock, paper или scissors. Если введете что-то другое, то проиграете", "rock");
+        let computerSelection = computerPlay();
+        alert ( "Вы выкинули - " + playerSelection + ". А компьютер - " + computerSelection + "." );
+        let result = playRound(playerSelection, computerSelection);
+        if (result === "Что-то пошло не так..."
+        || result === "Ничья!") {
+          alert ("Никто не выиграл в этом раунде")
+            continue;
+        }
+        else if (result === "Игрок выиграл!") {
+            playerScore++;
+            alert (result + "\n Счет: Игрок - " + playerScore + ", компьютер - " + computerScore);
+            continue;
+        }
+        else if (playRound(playerSelection, computerSelection) === "Компьютер выиграл!") {
+            computerScore++;
+            alert (result + "\n Счет: Игрок - " + playerScore + ", компьютер - " + computerScore);
+            continue;
+        }
+    }
+    if (playerScore > computerScore) {
+        alert ("Игрок выиграл со счетом " + playerScore + ":" + computerScore + "!");
+    }
+    else {
+        alert ("Компьютер выиграл со счетом " + playerScore + ":" + computerScore + "!");
+    }
+}
+game(); 
+
+  </script>
+  
+</body>
+</html>
