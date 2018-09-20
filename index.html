@@ -3,10 +3,152 @@
 <head>
   <meta charset="utf-8">
   <title>Game Rock Scissors Paper </title>
+  <style>
+    
+    #score {
+        position: relative;
+        display:    block;
+        left:37%; 
+        float:none;
+        margin-top:3em;
+
+    }
+    .player {
+        text-align: center;
+        background-color: gainsboro; 
+        font-size: 1em;
+        float: left;
+        padding: 20px;
+        width:100px;
+    }
+
+    .scoring {
+        font-size: 1em;
+        text-align: center;
+        float: left;
+        padding: 20px;
+        font-weight: bolder;
+    }
+
+    .game-block {
+        position: relative;
+        display: inline-block;
+        left:37%;
+        float:none;
+    }
+
+    .result-round {
+        clear:both;
+        margin-top:10%;
+        position: relative; 
+        left:37%;
+    }
+
+    .game-element {
+        float: left;
+    }
+
+    .button {
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background-color: #4CAF50; /* Green */
+        color: white;
+    }
+
+  </style>
 </head>
 <body>
+
+<h1 style="text-align:center; padding-bottom: 1em;">Let's play!</h1>
+
+<div class="game-block">
+    <div class="game-element" id="rock"><button class="button">Rock</button></div>
+    <div class="game-element" id="paper"><button class="button">Paper</button></div>
+    <div class="game-element" id="scissors"><button class="button">Scissors</button></div>
+    
+</div>
+
+<div id="score">
+    <div class="player" id="player1">You</div>
+    <div class="scoring">0:0</div>
+    <div class="player" id="player2">Computer</div>
+</div>
+
+
+<div class="result-round"></div>
+
   
-  <script type="text/javascript">
+<script type="text/javascript">
+
+let scoring = document.querySelector('.scoring'); 
+let rock = document.getElementById('rock'); 
+let paper = document.getElementById('paper'); 
+let scissors = document.getElementById('scissors'); 
+
+rock.addEventListener("click", game); 
+paper.addEventListener("click", game); 
+scissors.addEventListener("click", game); 
+
+let playerScore = 0; 
+let computerScore = 0; 
+
+function game(event) {
+    
+    let computerChoice = computerPlay();
+    let playerChoice = this.id;
+    let resultRound = defineWinnerAtRound(playerChoice, computerChoice);
+
+    //show choices of players and who win in one round
+    let thisRound = document.createElement('div'); 
+    thisRound.innerHTML = `Player had chosen ${playerChoice}, computer - ${computerChoice}. ${resultRound}`;
+    let resultsAllRoundes = document.querySelector('.result-round'); 
+    resultsAllRoundes.prepend(thisRound); 
+
+    //change score
+    switch (resultRound) {
+        case "Tie!":
+        case "Something wrong":
+        break; 
+
+        case "Computer won!":
+        computerScore++;
+        break; 
+
+        case "You won!": 
+        playerScore++; 
+        break; 
+    }
+
+    //show score
+    scoring.innerHTML=`${playerScore}:${computerScore}`; 
+
+    //check on winner of game (have 5 points)
+    if (playerScore === 5) {
+        alert ('Congratulations! You won!');
+        playerScore = computerScore = 0; 
+        scoring.innerHTML=`${playerScore}:${computerScore}`;
+        resultsAllRoundes.innerHTML=""; 
+
+    }
+    else if (computerScore === 5) {
+        alert ('Computer won!');
+        playerScore = computerScore = 0;
+        scoring.innerHTML=`${playerScore}:${computerScore}`; 
+        resultsAllRoundes.innerHTML=""; 
+        
+    }
+
+}
 
 function computerPlay () {
     let choice = Math.floor(Math.random() * 3);
@@ -14,59 +156,26 @@ function computerPlay () {
     return set[choice];
   }
 
-  function playRound (playerSelection, computerSelection) {
-  	playerSelection = playerSelection.toLocaleLowerCase();
-    let result;
-    if (playerSelection === null || playerSelection === undefined 
-    	|| computerSelection === null || computerSelection === undefined) {
-        return result = "Что-то пошло не так..."; 
+
+function defineWinnerAtRound (playerChoice, computerChoice) {
+  	let result;
+    if (playerChoice === null || playerChoice === undefined 
+    	|| computerChoice === null || computerChoice === undefined) {
+        return result = "Something wrong"; 
     }
-    if (playerSelection === computerSelection) {
-        return result = "Ничья!";
+    if (playerChoice === computerChoice) {
+        return result = "Tie!";
     }
-    if ((playerSelection === "rock" && computerSelection === "scissors")
-        || (playerSelection === "scissors" && computerSelection === "paper")
-        || (playerSelection === "paper" && computerSelection === "rock")) {
-        return result = "Игрок выиграл!";
+    if ((playerChoice === "rock" && computerChoice === "scissors")
+        || (playerChoice === "scissors" && computerChoice === "paper")
+        || (playerChoice === "paper" && computerChoice === "rock")) {
+        return result = "You won!";
     }
     else {
-        return result = "Компьютер выиграл!";
+        return result = "Computer won!";
     }
   }
 
-  function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-
-    while ((playerScore + computerScore) < 5) {
-        let playerSelection = prompt("Сделайте свой ход - выберите rock, paper или scissors. Если введете что-то другое, то проиграете", "rock");
-        let computerSelection = computerPlay();
-        alert ( "Вы выкинули - " + playerSelection + ". А компьютер - " + computerSelection + "." );
-        let result = playRound(playerSelection, computerSelection);
-        if (result === "Что-то пошло не так..."
-        || result === "Ничья!") {
-          alert ("Никто не выиграл в этом раунде")
-            continue;
-        }
-        else if (result === "Игрок выиграл!") {
-            playerScore++;
-            alert (result + "\n Счет: Игрок - " + playerScore + ", компьютер - " + computerScore);
-            continue;
-        }
-        else if (playRound(playerSelection, computerSelection) === "Компьютер выиграл!") {
-            computerScore++;
-            alert (result + "\n Счет: Игрок - " + playerScore + ", компьютер - " + computerScore);
-            continue;
-        }
-    }
-    if (playerScore > computerScore) {
-        alert ("Игрок выиграл со счетом " + playerScore + ":" + computerScore + "!");
-    }
-    else {
-        alert ("Компьютер выиграл со счетом " + playerScore + ":" + computerScore + "!");
-    }
-}
-game(); 
 
   </script>
   
